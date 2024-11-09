@@ -12,7 +12,6 @@ class AddBook(Toplevel):
         self.title("Novo Livro")
         self.resizable(False, False)
 
-
         #####################################################################################
 
         # Top Frame
@@ -25,7 +24,7 @@ class AddBook(Toplevel):
         self.top_image = PhotoImage(file='icons/add-book.png')
         top_image_lbl = Label(self.topFrame,image=self.top_image, bg='white')
         top_image_lbl.place(x=120,y=10)
-        heading= Label(self.topFrame,text='    Adicionar Livro     ', font='arial 22 bold', fg='#033f8a',bg='white')
+        heading= Label(self.topFrame,text='Adicionar Livro', font='arial 22 bold', fg='#033f8a',bg='white')
         heading.place(x=290,y=60)
 
         ########################################################################################################

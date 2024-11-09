@@ -34,7 +34,7 @@ class BorrowBook(Toplevel):
         self.bottomFrame = Frame(self, height=600, bg='#fcc324')
         self.bottomFrame.pack(fill=X)
         # Cabeçalho e imagem
-        self.top_image = PhotoImage(file='icons/add-person.png')
+        self.top_image = PhotoImage(file='icons/borrow-book.png')
         top_image_lbl = Label(self.topFrame,image=self.top_image, bg='white')
         top_image_lbl.place(x=120,y=10)
         heading= Label(self.topFrame,text='Empréstimo de livro', font='arial 22 bold', fg='#033f8a',bg='white')
@@ -72,10 +72,10 @@ class BorrowBook(Toplevel):
                 query="INSERT INTO 'emprestados' (blivro_id,bmembro_id) VALUES(?,?)"
                 cur.execute(query,(book_name,member_name))
                 con.commit()
-                messagebox.showinfo("Sucesso!","Adcionado com sucesso a base de dados!", icon='info')
+                messagebox.showinfo("Sucesso!","O Livro foi emprestado para {0}!".format(member_name), icon='info')
                 cur.execute("UPDATE livros SET livro_status =? WHERE livro_id=?", (1,self.book_id))
                 con.commit()
             except:
-                messagebox.showerror("Error", "Não foi possível adicionar a base de dados!", icon='warning')
+                messagebox.showerror("Error", "Não foi possível emprestar o livro!", icon='warning')
         else:
             messagebox.showerror("Error", "Todos os campos precisam estar preenchidos", icon='warning')

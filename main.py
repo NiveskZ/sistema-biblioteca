@@ -1,8 +1,9 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
-from PIL import Image, ImageTk
 import sqlite3
+
+from PIL import Image, ImageTk
 
 import addbook,addmember,borrowbook,returnbook
 
@@ -54,8 +55,9 @@ class Main(object):
                 value = str(self.list_books.get(self.list_books.curselection()))
                 borrown_id = value.split('-')[0]
                 borrow_book = BorrowBook()
-
+            # Adiciona duplo clique para que o livro seja emprestado.
             self.list_books.bind('<Double-Button-1>', doubleClick)
+            # Faz com que atualize qualquer informação modificada.
             self.list_books.bind('<<ListboxSelect>>',bookInfo)
             self.tabs.bind('<<NotebookTabChanged>>', displayStatistics)
 
@@ -79,11 +81,11 @@ class Main(object):
         search_bar = LabelFrame(centerRightFrame,width=440, height=75, text='Pesquisa', bg='#9bc9ff')
         search_bar.pack(fill=BOTH)
         self.lbl_search=Label(search_bar, text='Procurar: ',font='arial 12 bold', bg='#9bc9ff', fg='white')
-        self.lbl_search.grid(row=0,column=0,padx=20,pady=10)
+        self.lbl_search.grid(row=0,column=0,padx=10,pady=10)
         self.ent_search=Entry(search_bar, width=30,bd=2)
         self.ent_search.grid(row=0,column=1,columnspan=3,padx=10,pady=10)
         self.btn_search=Button(search_bar,text='Procurar', font='arial 12', bg='#fcc324',fg='white', command=self.searchBooks)
-        self.btn_search.grid(row=0,column=4,padx=20,pady=10)
+        self.btn_search.grid(row=0,column=4,padx=10,pady=10)
         #list bar
         list_bar =LabelFrame(centerRightFrame,width=440,height=175, text="List Box",bg='#fcc324')
         list_bar.pack(fill=BOTH)
@@ -97,14 +99,14 @@ class Main(object):
         rb2.grid(row=1, column=1)
         rb3.grid(row=1, column=2)
         btn_list = Button(list_bar,text='Listar livros', bg='#2488ff', fg='white', font='arial 12', command=self.listBooks)
-        btn_list.grid(row=1, column=3, padx=40,pady=10)
+        btn_list.grid(row=1, column=3, padx=10,pady=10)
 
         #Imagem e Título
         image_bar = Frame(centerRightFrame, width=440, height=350)
         image_bar.pack(fill=BOTH)
         self.title_right=Label(image_bar, text='Bem vindo!', font='arial 16 bold')
         self.title_right.grid(row=0)
-        self.img_library = PhotoImage(file='icons/books-2.png')
+        self.img_library = ImageTk.PhotoImage(Image.open('icons/bookshelf.jpg'))
         self.lblImg=Label(image_bar,image=self.img_library)
         self.lblImg.grid(row=1)
 
@@ -133,7 +135,7 @@ class Main(object):
         self.tabs = ttk.Notebook(centerLeftFrame,width=900,height=660)
         self.tabs.pack()
         self.tab1_icon=PhotoImage(file='icons/stack-book.png')
-        self.tab2_icon=PhotoImage(file='icons/user.png')
+        self.tab2_icon=PhotoImage(file='icons/books-2.png')
         self.tab1 = ttk.Frame(self.tabs)
         self.tab2 = ttk.Frame(self.tabs)
         self.tabs.add(self.tab1, text='Gerenciamento de biblioteca', image=self.tab1_icon, compound=LEFT)
@@ -162,11 +164,6 @@ class Main(object):
         displayBooks(self)
         displayStatistics(self)
     
-    def addBook(self):
-        add=addbook.AddBook()
-
-    def addMember(self):
-        member = addmember.AddMember()
 
     def searchBooks(self):
         value = self.ent_search.get()
@@ -204,6 +201,10 @@ class Main(object):
                 self.list_books.insert(count,str(book[0])+ "-"+book[1])
                 count += 1
 
+    def addBook(self):
+        add=addbook.AddBook()
+    def addMember(self):
+        member = addmember.AddMember()
     def borrowBook(self):
         borrow_book = borrowbook.BorrowBook()
     def returnBook(self):
@@ -289,7 +290,7 @@ def main():
     root = Tk()
     app = Main(root)
     root.title("Sistema de gerenciamento de Bibliotecas")
-    root.geometry("1350x750+350+200")
+    root.geometry("1450x750+350+200")
     # Colocando um icone na janela
     im = Image.open('icons/logo.png')
     photo = ImageTk.PhotoImage(im)

@@ -11,10 +11,7 @@ class AddMember(Toplevel):
         self.geometry("650x750+550+200")
         self.title("Novo Usuario")
         self.resizable(False, False)
-
-
         #####################################################################################
-
         # Top Frame
         self.topFrame = Frame(self, height=150, bg='white')
         self.topFrame.pack(fill=X)
@@ -25,12 +22,11 @@ class AddMember(Toplevel):
         self.top_image = PhotoImage(file='icons/add-person.png')
         top_image_lbl = Label(self.topFrame,image=self.top_image, bg='white')
         top_image_lbl.place(x=120,y=10)
-        heading= Label(self.topFrame,text='    Adicionar Novo Usuario     ', font='arial 22 bold', fg='#033f8a',bg='white')
+        heading= Label(self.topFrame,text='Adicionar Novo Usuario', font='arial 22 bold', fg='#033f8a',bg='white')
         heading.place(x=290,y=60)
 
         ########################################################################################################
         # Entradas 
-
         # Nome
         self.lbl_name = Label(self.bottomFrame, text='Nome: ', font='arial 15 bold', fg='white', bg='#fcc324')
         self.lbl_name.place(x=40,y=40)

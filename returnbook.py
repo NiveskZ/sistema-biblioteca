@@ -1,30 +1,34 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
+
+import pandas as pd
 import sqlite3
 
 con = sqlite3.connect('library.db')
 cur = con.cursor()
 
+# query = """SELECT * FROM emprestados """
+# df = pd.read_sql(query,con)
+
+
 class ReturnBook(Toplevel):
     def __init__(self):
         Toplevel.__init__(self)
+        query = """SELECT * FROM emprestados """
+        global df
+        df = pd.read_sql(query,con)
+        
+
         self.geometry("650x750+550+200")
         self.title("Devolução de Livro")
         self.resizable(False,False)
-
-        query = "SELECT borrow_id FROM emprestados"
-        books = cur.execute(query).fetchall()
-        borrow_list = []
+        
+        books = df["blivro_id"]
+        book_list = []
         for book in books:
-            borrow_list.append(str(book[0]))
-        
-        query2 = "SELECT DISTINCT bmembro_id FROM emprestados"
-        members = cur.execute(query2).fetchall()
-        member_list = []
-        for member in members:
-            member_list.append(str(member[0]))
-        
+            book_list.append(book)
+        print(book_list)
 
         #####################################################################################
 
@@ -35,7 +39,7 @@ class ReturnBook(Toplevel):
         self.bottomFrame = Frame(self, height=600, bg='#fcc324')
         self.bottomFrame.pack(fill=X)
         # Cabeçalho e imagem
-        self.top_image = PhotoImage(file='icons/add-person.png')
+        self.top_image = PhotoImage(file='icons/return-book.png')
         top_image_lbl = Label(self.topFrame,image=self.top_image, bg='white')
         top_image_lbl.place(x=120,y=10)
         heading= Label(self.topFrame,text='Devolução de livro', font='arial 22 bold', fg='#033f8a',bg='white')
@@ -45,39 +49,36 @@ class ReturnBook(Toplevel):
         # Entradas 
 
         # Livro
-        self.book_name = StringVar()
-        self.lbl_book = Label(self.bottomFrame, text='Livro: ', font='arial 15 bold', fg='white', bg='#fcc324')
-        self.lbl_book.place(x=40,y=80)
-        self.combo_book = ttk.Combobox(self.bottomFrame,textvariable=self.book_name)
-        self.combo_book['values']=borrow_list
-        self.combo_book.place(x=150, y=85)
+        self.borrow_name = StringVar()
+        self.lbl_borrow = Label(self.bottomFrame, text='Livro: ', font='arial 15 bold', fg='white', bg='#fcc324')
+        self.lbl_borrow.place(x=40,y=40)
+        self.combo_borrow = ttk.Combobox(self.bottomFrame,textvariable=self.borrow_name)
+        self.combo_borrow['values']=book_list
+        self.combo_borrow.place(x=150, y=45)
 
-        # Membro
-        self.member_name = StringVar()
-        self.lbl_member = Label(self.bottomFrame, text='Usuario: ', font='arial 15 bold', fg='white', bg='#fcc324')
-        self.lbl_member.place(x=40,y=40)
-        self.combo_membro = ttk.Combobox(self.bottomFrame,textvariable=self.member_name)
-        self.combo_membro['values'] = member_list
-        self.combo_membro.place(x=150, y=45)
-        
         # Botão
         button = Button(self.bottomFrame, text='Devolver', command=self.returnBook)
-        button.place(x=270,y=120)
+        button.place(x=270,y=160)
+
     def returnBook(self):
-        book_name = self.book_name.get()
-        self.book_id=int(book_name.split('-')[0])
+        
+        borrow_name = self.borrow_name.get()
+        df2 = df.loc[df.blivro_id == borrow_name]['borrow_id']
+        b_id = df2[0]
+        
+        borrow_id = int(borrow_name[0])       
 
-        member_name = self.member_name.get()
-
-        if (book_name and member_name !=""):
+        if (borrow_name !=""):
             try:
-                query="DELETE FROM 'emprestados' WHERE borrow_id=?"
-                cur.execute(query,(book_name,member_name))
+                query="DELETE FROM emprestados WHERE borrow_id={0}"
+                cur.execute(query.format(b_id))
                 con.commit()
-                messagebox.showinfo("Sucesso!","Adcionado com sucesso a base de dados!", icon='info')
-                cur.execute("UPDATE livros SET livro_status =? WHERE livro_id=?", (0,self.book_id))
+                query2 = "UPDATE livros SET livro_status =? WHERE livro_id=?"
+                cur.execute(query2, (0,borrow_id))
                 con.commit()
+                messagebox.showinfo("Sucesso!","O livro foi devolvido!", icon='info')
             except:
-                messagebox.showerror("Error", "Não foi possível adicionar a base de dados!", icon='warning')
+                messagebox.showerror("Error", "Não foi possível devolver o livro!", icon='warning')
         else:
             messagebox.showerror("Error", "Todos os campos precisam estar preenchidos", icon='warning')
+        
